@@ -139,6 +139,7 @@
 * If the wifi credentials have been changed, the firmware needs to be recompiled before uploading 
 * Might require installation of [ESP32 drivers CP210x](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/establish-serial-connection.html)
 * The latest version of the pre-compiled firmware binary can be found under releases
+  * The required binaries can be found after building in **.pio/build/esp32dev/**  {bootloader.bin, partitions.bin, and/or firmware.bin}
   * Use the [ESPRESSIF Flash Tool](https://www.espressif.com/en/support/download/other-tools) to flash the .bin file to the ESP32
     1. Select the chip type as "ESP32", and WorkMode as "Develop", then click OK
     2. Click the three dots button and select the bootloader.bin, partitions.bin, and firmware.bin file (can be found under releases)
