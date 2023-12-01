@@ -131,9 +131,12 @@
 
 
 ## ESP32 Segment Code Upload
+* Use VSCode with Platform.io extension to open the platformio.ini file
+  * This file might require the installation of ESP32 board from the Platform.io board menu
 * Segments are numbered starting from 1 to 100
 * All source files are in WaveSegment folder, in the 'src' directory
 * Enter correct local WiFi credential and MQTT broker IP address in credentials.h (rename and fill out sample_credentials.h)
+* If the wifi credentials have been changed, the firmware needs to be recompiled before uploading 
 * Might require installation of [ESP32 drivers CP210x](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/establish-serial-connection.html)
 * The latest version of the pre-compiled firmware binary can be found under releases
   * Use the [ESPRESSIF Flash Tool](https://www.espressif.com/en/support/download/other-tools) to flash the .bin file to the ESP32

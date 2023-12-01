@@ -1,6 +1,6 @@
 credentials.h
 .pio/build
 .vscode
-platformio.ini
+# platformio.ini
 Actuation_data
 segmentsID.csv

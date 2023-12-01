@@ -26,7 +26,7 @@ segmentPath = "ShiveWorks/segment"
 actuationDataPath = "./PropertyControlFunctions/Actuation_data"
 
 # milliseconds of countdown time after a "start" command is issued; do not set to less than 3000
-countdown_ms = 5000
+countdown_ms = 3200
 
 # local broker address, if the server runs on the same PC as the client never change it
 broker = "127.0.0.1"

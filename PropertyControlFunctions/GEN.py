@@ -17,7 +17,7 @@ import Test
 #### Definition of Inputs####
 # Spatial Parameters
 a = 0
-b = 1  # Total interval for spatial points
+b = 2  # Total interval for spatial points
 T0 = 0.0
 Tf = 2.0  # Total interval for temporal points
 
@@ -30,7 +30,7 @@ n1 = .5  # These are the spatial-temporal volume fractions of the periods
 # Functionally Graded(FG) smoothing properties in space and time -
 # Larger values give more smoothing
 smt_x = .1
-smt_t = .5  # Spatial-Temporal Smoothing
+smt_t = .2  # Spatial-Temporal Smoothing
 
 V = .1  # Lamination velocity -- Only Used for Lamination
 
