@@ -131,7 +131,7 @@
 
 
 ## ESP32 Segment Code Upload
-* Use VSCode with Platform.io extension to open the platformio.ini file
+* Use VSCode with Platform.io extension to open the platformio.ini file in the WaveSegment folder
   * This file might require the installation of ESP32 board from the Platform.io board menu
 * Segments are numbered starting from 1 to 100
 * All source files are in WaveSegment folder, in the 'src' directory
