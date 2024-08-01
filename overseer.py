@@ -31,7 +31,7 @@ countdown_ms = 3200
 # local broker address, if the server runs on the same PC as the client never change it
 broker = "127.0.0.1"
 port = 1884
-client = mqtt.Client("Master PC")
+client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, "Master PC")
 
 
 def main():  # main method where the MQTT client is connected
