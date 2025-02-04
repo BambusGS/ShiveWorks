@@ -3,8 +3,10 @@
 #include "NTP.h"
 
 // NTP
-const char *ntpServer = "pool.ntp.org";
+// const char *ntpServer = "pool.ntp.org";
 // const char *ntpServer = "time.google.com";
+
+const char *ntpServer = "192.168.1.1";
 
 const int retryTimeout = 3600; // milliseconds do not set to less than 3000
 

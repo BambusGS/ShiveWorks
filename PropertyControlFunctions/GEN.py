@@ -17,9 +17,9 @@ import Test
 #### Definition of Inputs####
 # Spatial Parameters
 a = 0
-b = 2  # Total interval for spatial points
+b = 1  # Total interval for spatial points
 T0 = 0.0
-Tf = 2.0  # Total interval for temporal points
+Tf = 1.0  # Total interval for temporal points
 
 # Geometry Parameters -- used in both FG CB or FG Lam
 eps = (b-a)/2
@@ -52,7 +52,7 @@ xx = X.flatten(order='F')
 tt = T.flatten(order='F')
 
 #### Shive Machine- Set the number of spatial elements and the sample rate ####
-N_SpatElem = 40  # Number of Spatial Elements on the Device
+N_SpatElem = 3  # Number of Spatial Elements on the Device
 Mat1 = 0
 Mat2 = 255  # Material Range from Material 1 to Material 2
 t_SampPeri = 1/1000.  # Time Sample Period in Milliseconds
