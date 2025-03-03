@@ -4,7 +4,7 @@
 #include "FastLED.h"    // a library for controlling LEDs
 #include "ESP32Servo.h" // a library for controlling servos
 #include "OneButton.h"  // a library for the push button
-
+#include "MPU6050.h"    // a library for the MPU6050 accelerometer and gyroscope
 #include "esp_task_wdt.h"
 
 #include "mqtt.h" // a library for connecting to an MQTT broker and wirelessly controlling the shiver
@@ -278,6 +278,13 @@ bool hasInitializedMQTT = false;
 void setup()
 {
   Serial.begin(115200); // initialize the serial monitor
+  Wire.begin(21, 22);   // initialize the I2C bus with SDA on pin 21 and SCL on pin 22
+  delay(250);
+  if (mpu6050_init() != ESP_OK)
+  {
+    Serial.println("Error initializing MPU6050");
+  }
+
   initializeHW();       // initialize the LEDs, button, and servo
   // try to connect to the wifi 5 times
   while (!wifi_reconnect(false) && getConnectionAttemptsWiFi() < 5)
@@ -529,7 +536,15 @@ void actuate()
 // the loop performance is ~ 400 Hz
 void loop()
 {
-
+  int16_t ax, ay, az, gx, gy, gz;
+  if (mpu6050_read_accel_gyro(&ax, &ay, &az, &gx, &gy, &gz) == ESP_OK) {
+    Serial.printf("Accel: X=%d, Y=%d, Z=%d | Gyro: X=%d, Y=%d, Z=%d\r\n",
+                  ax, ay, az, gx, gy, gz);
+    // Optionally, process the sensor data (filtering, integration, etc.)
+  } else {
+    Serial.println("Failed to read sensor data.");
+  }
+  delay(5);
   button.tick();                // update the button state
   if (!client.loop())           // update the ESP32 MQTT client data and communication
     currSegmentStatus = Fault;  // if the client loop fails or is disconnected, set the status to fault
