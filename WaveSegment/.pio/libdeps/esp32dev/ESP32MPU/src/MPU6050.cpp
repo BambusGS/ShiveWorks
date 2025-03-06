@@ -99,7 +99,6 @@ int mpu6050_read_accel_gyro(int16_t* ax, int16_t* ay, int16_t* az,
 // Global Variables for Complementary Filter
 //-----------------------
 
-// A simple structure to hold IMU-related constants and state.
 struct IMUData {
   float mdpsPerLSB;    // millidegrees per second per LSB (e.g., ~7.63 for ±250 dps)
   float gyroODR;       // Gyro output data rate (Hz)
@@ -113,7 +112,6 @@ struct IMUData {
 
 IMUData imu = {7.63, 100.0, {0}, {0}};  // Set conversion factors and initial bias
 
-// Structure to hold Euler angles (pitch angle here is stored in .y)
 struct EulerAngles {
   float y;
 };
@@ -121,54 +119,42 @@ struct EulerAngles {
 EulerAngles eulerAngles = {0.0};
 float prevBias = 0.0;  // For bias correction in the complementary filter
 
-//-----------------------
-// Main Application Code
-//-----------------------
-
-void setup() {
-  Serial.begin(115200);
-  Serial.println("MPU6050 Test Starting...");
-  
-  // Initialize I2C bus with SDA on pin 21 and SCL on pin 22
-  Wire.begin(21, 22);
-  delay(100);
-  
-  if (mpu6050_init() != ESP_OK) {
-    Serial.println("Error initializing MPU6050");
-  }
-}
-
-void loop() {
+/**
+ * updateMPU6050 reads the sensor data and applies a complementary filter to compute
+ * the filtered pitch angle.
+ *
+ * @return Filtered pitch angle in degrees, or NAN if reading fails.
+ */
+float updateMPU6050() {
   int16_t ax_raw, ay_raw, az_raw, gx_raw, gy_raw, gz_raw;
   
   if (mpu6050_read_accel_gyro(&ax_raw, &ay_raw, &az_raw, &gx_raw, &gy_raw, &gz_raw) == ESP_OK) {
-    // Print raw sensor data
+    // (Optional) Print raw sensor data for debugging
     Serial.printf("Accel: X=%d, Y=%d, Z=%d | Gyro: X=%d, Y=%d, Z=%d\r\n",
                   ax_raw, ay_raw, az_raw, gx_raw, gy_raw, gz_raw);
     
-    // Convert raw values to floats (the scale cancels out in the ratio for angle)
+    // Convert raw values to floats
     float ax = (float)ax_raw;
     float ay = (float)ay_raw;
     float az = (float)az_raw;
     
     // Compute the observed pitch angle from the accelerometer (in degrees)
-    // (Assumes the sensor is oriented such that rotation about the Y axis gives pitch)
     float observedAngle = atan2(ax, sqrt(ay * ay + az * az)) * (180.0 / PI);
     
-    // Update the gyro reading for the Y axis (for pitch rate)
-    // (For proper integration, you might want to apply conversion from raw data to dps.)
+    // Update the gyro reading for the Y axis (pitch rate)
     imu.g.y = (float)gy_raw;
     
-    // Prediction: integrate the gyro reading over the sample period.
-    // Here (1/imu.gyroODR) is used as the time step.
+    // Compute the time step (assumed from gyro output data rate)
     float dt = 1.0 / imu.gyroODR;
+    
+    // Predict the new angle by integrating the gyro data
     float predictedAngle = eulerAngles.y + ((imu.mdpsPerLSB / 1000.0) * (imu.g.y - imu.gyroBias.y)) * dt;
     
     // Complementary filter parameters
-    float kappa = 0.97;      // weight for the gyro (equivalent to 1 - alpha)
-    float epsilon = 0.0001;  // weight for the bias correction
+    float kappa = 0.97;      // weight for the gyro (i.e., 1 - alpha)
+    float epsilon = 0.0001;  // bias correction weight
     
-    // Combine the prediction and the observed accelerometer angle
+    // Combine the predicted angle with the accelerometer angle
     eulerAngles.y = kappa * predictedAngle + (1.0 - kappa) * observedAngle;
     
     // Update the bias estimate
@@ -176,11 +162,12 @@ void loop() {
     prevBias = bias;
     imu.gyroBias.y = bias;
     
-    // Print the computed (filtered) pitch angle
-    Serial.printf("Filtered Pitch Angle: %.2f degrees\r\n", eulerAngles.y);
+    return eulerAngles.y;
   } else {
     Serial.println("Failed to read sensor data.");
+    return NAN;
   }
-  
-  delay(500);
 }
+
+// Note: The standalone setup() and loop() functions have been removed.
+// Use updateMPU6050() in your main code instead.
